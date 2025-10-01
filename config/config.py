@@ -5,6 +5,11 @@ load_dotenv()
 
 class Config:
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    if not OPENAI_API_KEY:
+        raise ValueError(
+            "❌ OPENAI_API_KEY is not set. Please add it to your .env file or environment variables."
+        )
+    
     MODEL_NAME = 'gpt-4o-mini'
     MAX_MEMORY_TURNS = 5
     MAX_TOKENS = 200
@@ -16,3 +21,5 @@ class Config:
     PG_PORT = os.getenv('PG_PORT')
 
     EMBEDDING_MODEL = 'text-embedding-3-small'
+
+    DEBUG = True

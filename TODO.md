@@ -1,0 +1,2 @@
+- Build a PromptManager (`prompt_manager.py`)
+  - Stateful: Store prompt inside it.
