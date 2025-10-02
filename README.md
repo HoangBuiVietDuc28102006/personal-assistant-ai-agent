@@ -15,4 +15,4 @@
 ---
 
 ## Reference
-1. https://www.anthropic.com/engineering/building-effective-agents
+1. Anthropic. (2024, December 19). Building effective AI agents. Building Effective AI Agents \ Anthropic. https://www.anthropic.com/engineering/building-effective-agents
