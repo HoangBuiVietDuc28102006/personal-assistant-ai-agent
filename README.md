@@ -11,3 +11,8 @@
   - Running through CLI
 
 ![Component Diagram](img/0110_component_diagram.png)
+
+---
+
+## Reference
+1. https://www.anthropic.com/engineering/building-effective-agents
