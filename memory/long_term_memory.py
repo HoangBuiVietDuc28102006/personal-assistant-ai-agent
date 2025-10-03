@@ -7,6 +7,7 @@ class LongTermMemory:
     def __init__(self):
         self.conn = None
         self.cur = None
+        self.enabled = True
         try:
             self.conn = psycopg2.connect(
                 dbname=Config.PG_DBNAME,

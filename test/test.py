@@ -1,3 +1,4 @@
+# agent.py
 from models.llm import LLM
 from prompts.prompt_manager import PromptManager
 from memory.short_term_memory import ShortTermMemory
@@ -28,11 +29,7 @@ class Agent:
             input=input_list,
         )
 
-        # Append output
         input_list += response.output
-        print("------------------------------------------------------------")
-        print(input_list)
-        print("------------------------------------------------------------")
         has_tool_call = False
 
         # 🔎 Look for tool calls
@@ -62,9 +59,6 @@ class Agent:
                     "call_id": item.call_id,
                     "output": json.dumps(result),
                 })
-                print("------------------------------------------------------------")
-                print(input_list)
-                print("------------------------------------------------------------")
 
         # If a tool was called, re-ask LLM with results
         if has_tool_call:
