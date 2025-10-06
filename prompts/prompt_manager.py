@@ -1,5 +1,9 @@
+import logging
+from config.config import Config
 from memory.short_term_memory import ShortTermMemory
 from memory.long_term_memory import LongTermMemory
+
+logger = logging.getLogger(__name__)
 
 class PromptManager:
     def __init__(self, short_term_memory: ShortTermMemory, long_term_memory: LongTermMemory):
