@@ -6,15 +6,11 @@ class LLM:
         self.client = OpenAI(api_key=Config.OPENAI_API_KEY)
         self.model = Config.MODEL_NAME
 
-    def generate(self, input_list: list):
-        with self.client.responses.stream(
+    def generate(self, input_list: list, tools: list | None = None):
+        response = self.client.responses.create(
             model=self.model,
+            tools=tools if tools else None,
             input=input_list,
             max_output_tokens=Config.MAX_TOKENS,
-        ) as stream:
-            for event in stream:
-                if event.type == "response.output_text.delta":
-                    yield event.delta
-                elif event.type == "response.completed":
-                    break
-            stream.close()
+        )
+        return response

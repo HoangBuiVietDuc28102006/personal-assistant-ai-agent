@@ -28,11 +28,7 @@ class Agent:
         logger.debug("📝 Prompt built: %s", input_list)
 
         # First response (may or may not call a tool)
-        response = self.llm.client.responses.create(
-            model=self.llm.model,
-            tools=self.tools.schemas(),
-            input=input_list,
-        )
+        response = self.llm.generate(input_list, self.tools.schemas())
 
         # Append output
         input_list += response.output
@@ -67,11 +63,8 @@ class Agent:
 
         # If a tool was called, re-ask LLM with results
         if has_tool_call:
-            final_response = self.llm.client.responses.create(
-                model=self.llm.model,
-                input=input_list,
-                tools=self.tools.schemas(),
-            )
+            final_response = self.llm.generate(input_list, self.tools.schemas())
+
             answer = final_response.output_text
             logger.info("✅ Final answer after tool call: %s", answer)
         else:
