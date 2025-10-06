@@ -63,4 +63,4 @@ def setup_logging():
     """Initialize project-wide logging."""
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger(__name__)
-    logger.info(f"🪵 Logging initialized DEBUG={Config.DEBUG})")
+    logger.info(f"Logging initialized DEBUG={Config.DEBUG})")

@@ -5,7 +5,7 @@ if __name__ == "__main__":
     setup_logging()
     import logging
     logger = logging.getLogger(__name__)
-    logger.info("🚀 Application started")
+    logger.info("Application started")
     
     cli = CLI()
     cli.run()

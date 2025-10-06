@@ -11,7 +11,7 @@ class LLM:
         logger.debug("LLM initialized with model: %s", self.model)
 
     def generate(self, input_list: list, tools: list | None = None):
-        logger.info("🚀 Generating response using model: %s", self.model)
+        logger.info("Generating response using model: %s", self.model)
 
         try:
             response = self.client.responses.create(
@@ -20,8 +20,8 @@ class LLM:
                 input=input_list,
                 max_output_tokens=Config.MAX_TOKENS,
             )
-            logger.debug("✅ LLM response received successfully")
+            logger.debug("LLM response received successfully")
             return response
         except Exception as e:
-            logger.exception("❌ LLM generation failed: %s", e)
+            logger.exception("LLM generation failed: %s", e)
             raise RuntimeError("Failed to generate LLM response") from e
