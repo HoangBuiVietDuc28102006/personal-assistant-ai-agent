@@ -18,6 +18,21 @@ class LongTermMemory:
             )
             self.conn.autocommit = True
             self.cur = self.conn.cursor()
+
+            self.cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+            self.cur.execute("""
+                CREATE TABLE IF NOT EXISTS user_memories (
+                    id SERIAL PRIMARY KEY,
+                    role TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    embedding vector(1536)
+                );
+            """)
+            self.cur.execute("""
+                CREATE INDEX IF NOT EXISTS user_memories_embedding_idx
+                ON user_memories USING ivfflat (embedding vector_l2_ops)
+                WITH (lists = 100);
+            """)
         except Exception as e:
             print(f"[WARN] LongTermMemory disabled (DB error: {e})")
             self.enabled = False
@@ -51,3 +66,9 @@ class LongTermMemory:
         except Exception as e:
             print(f"[ERROR] Memory search failed: {e}")
             return []
+    
+    def close(self):
+        if self.cur:
+            self.cur.close()
+        if self.conn:
+            self.conn.close()

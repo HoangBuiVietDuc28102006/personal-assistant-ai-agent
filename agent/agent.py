@@ -1,10 +1,13 @@
 from models.llm import LLM
+import logging
 from prompts.prompt_manager import PromptManager
 from memory.short_term_memory import ShortTermMemory
 from memory.long_term_memory import LongTermMemory
 from tools.tool_registry import tool_registry
 from config.config import Config
 import json
+
+logger = logging.getLogger(__name__)
 
 class Agent:
     def __init__(self):
@@ -18,8 +21,11 @@ class Agent:
         self.tools = tool_registry
 
     def chat(self, user_input: str):
+        logger.info("💬 User input: %s", user_input)
+
         # Add user message
         input_list = self.prompt_manager.build_prompt(user_input)
+        logger.debug("📝 Prompt built: %s", input_list)
 
         # First response (may or may not call a tool)
         response = self.llm.client.responses.create(
@@ -30,9 +36,8 @@ class Agent:
 
         # Append output
         input_list += response.output
-        print("------------------------------------------------------------")
-        print(input_list)
-        print("------------------------------------------------------------")
+        logger.debug("📥 LLM raw response: %s", response.output)
+
         has_tool_call = False
 
         # 🔎 Look for tool calls
@@ -41,30 +46,24 @@ class Agent:
                 has_tool_call = True
                 tool = self.tools.get(item.name)
                 if not tool:
-                    if Config.DEBUG:
-                        print(f"⚠️ Tool '{item.name}' not found")
+                    logger.warning("⚠️ Tool '%s' not found", item.name)
                     continue
 
                 try:
-                    if Config.DEBUG:
-                        print(f"🤖 Decided to call tool: {item.name} with args: {item.arguments}")
+                    logger.info("🤖 Calling tool: %s with args: %s", item.name, item.arguments)
                     params = tool.parameters.model_validate_json(item.arguments)
                     result = tool.run(params)
-                    if Config.DEBUG:
-                        print(f"🛠 Tool result: {result}")
+                    logger.debug("🛠 Tool '%s' result: %s", item.name, result)
                 except Exception as e:
                     result = {"error": str(e)}
-                    if Config.DEBUG:
-                        print(f"❌ Tool execution failed: {e}")
+                    logger.error("❌ Tool execution failed: %s", e)
 
                 input_list.append({
                     "type": "function_call_output",
                     "call_id": item.call_id,
                     "output": json.dumps(result),
                 })
-                print("------------------------------------------------------------")
-                print(input_list)
-                print("------------------------------------------------------------")
+                logger.debug("📤 Added tool call output: %s", input_list)
 
         # If a tool was called, re-ask LLM with results
         if has_tool_call:
@@ -74,8 +73,10 @@ class Agent:
                 tools=self.tools.schemas(),
             )
             answer = final_response.output_text
+            logger.info("✅ Final answer after tool call: %s", answer)
         else:
             answer = response.output_text
+            logger.info("✅ Final answer: %s", answer)
 
         # Save user input and agent output
         self.prompt_manager.save_turn(user_input, answer)

@@ -31,13 +31,3 @@ class PromptManager:
         """
         self.short_term_memory.add("user", user_input)
         self.short_term_memory.add("assistant", assistant_reply)
-
-    def add_tool_result(self, tool_call_id: str, result: dict):
-        """
-        Add a tool call result into the conversation history so the LLM
-        can see it on the next turn.
-        """
-        self.short_term_memory.add("tool", {
-            "tool_call_id": tool_call_id,
-            "content": result
-        })

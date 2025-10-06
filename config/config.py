@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
 
@@ -23,3 +24,9 @@ class Config:
     EMBEDDING_MODEL = 'text-embedding-3-small'
 
     DEBUG = True
+
+logging.basicConfig(
+    level=logging.DEBUG if Config.DEBUG else logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
