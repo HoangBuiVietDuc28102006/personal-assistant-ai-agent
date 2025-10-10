@@ -28,4 +28,3 @@ class ToolRegistry:
     def all(self) -> dict[str, Tool]:
         """Return all registered tools."""
         return self.tools
-    
